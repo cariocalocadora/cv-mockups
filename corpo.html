@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Corpo do ALFRED — v2</title>
+<style>
+:root{
+  --gold:#e0a53c; --gold-dim:#8a6724;
+  --cy:#3fd4e8; --cy-dim:#1b6b7a;
+  --bg:#0d0f14; --deep:#07080b; --panel:#12141a; --blk:#181b23;
+  --bd:#2a2f3a; --bd2:#262b36;
+  --wt:#e8ebf2; --dim:#7d8598;
+  --vd:#4ade80; --am:#fbbf24; --cz:#5b6376;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  /* vitalidade = partes verdes / 16. O script só grava este número; todo o movimento é CSS. */
+  --vit:.5;
+  --t-pulso:calc(4.6s - var(--vit) * 2.4s);   /* mais verde = pulsa mais rápido */
+  --t-corpo:calc(7s - var(--vit) * 3s);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  color:var(--wt);font-family:var(--sans);font-weight:300;padding:0 0 60px;
+  background:
+    radial-gradient(900px 520px at 50% 300px, rgba(63,212,232,calc(.02 + var(--vit) * .07)), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 .5px, transparent .5px 44px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 .5px, transparent .5px 44px),
+    var(--deep);
+}
+
+/* ===== movimento ===== */
+@keyframes reator{0%,100%{transform:scale(.86);opacity:.72}50%{transform:scale(1.2);opacity:1}}
+@keyframes onda{0%{transform:scale(.7);opacity:.6}100%{transform:scale(2.3);opacity:0}}
+@keyframes meialuz{0%,100%{opacity:.25}50%{opacity:.85}}
+@keyframes fio{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes respira{0%,100%{opacity:.82}50%{opacity:1}}
+@keyframes aura{0%,100%{transform:scale(.96);opacity:calc(var(--vit) * .35)}50%{transform:scale(1.04);opacity:calc(var(--vit) * .75)}}
+@keyframes seg{0%,100%{opacity:.6}50%{opacity:1}}
+
+.cab{max-width:1180px;margin:0 auto;padding:46px 22px 8px;text-align:center}
+.cab h1{font-size:24px;letter-spacing:.26em;font-weight:300;color:var(--gold)}
+.cab p{font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-top:9px}
+
+.leg{max-width:1180px;margin:20px auto 0;padding:0 22px;display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+.lg{display:flex;align-items:center;gap:9px;background:rgba(18,20,26,.8);border:0.5px solid var(--bd);border-radius:9px;padding:9px 14px}
+.lg i{width:8px;height:8px;border-radius:50%;flex:none}
+.lg i.vd{background:var(--vd);box-shadow:0 0 8px var(--vd);animation:reator var(--t-pulso) ease-in-out infinite}
+.lg i.am{background:var(--am);animation:meialuz 4.8s ease-in-out infinite}
+.lg i.cz{background:var(--cz);opacity:.5}
+.lg i.tt{background:var(--gold)}
+.lg b{font-size:19px;font-family:var(--mono);font-weight:400;font-variant-numeric:tabular-nums}
+.lg span{font-size:11px;color:var(--dim);line-height:1.35}
+.lg span u{display:block;text-decoration:none;color:var(--wt);font-size:12px}
+
+/* indicador de vitalidade */
+.vit{max-width:520px;margin:16px auto 0;padding:0 22px;text-align:center}
+.vit-t{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.vit-t b{font-family:var(--mono);font-weight:400;font-size:15px;color:var(--cy);letter-spacing:.04em;text-shadow:0 0 10px rgba(63,212,232,.6)}
+.vit-b{display:flex;gap:4px;margin-top:9px}
+.vit-b i{flex:1;height:5px;border-radius:1px;background:var(--bd2)}
+.vit-b i.on{background:var(--cy);box-shadow:0 0 7px rgba(63,212,232,.75);animation:seg var(--t-pulso) ease-in-out infinite}
+.vit-b i.meia{background:var(--am);opacity:.38}
+
+.palco{max-width:1180px;margin:18px auto 0;padding:0 14px}
+.moldura{position:relative;border:0.5px solid var(--bd);border-radius:14px;padding:6px;background:rgba(13,15,20,.55)}
+.moldura:before,.moldura:after{content:"";position:absolute;width:22px;height:22px;border:0.5px solid var(--gold);pointer-events:none}
+.moldura:before{top:-1px;left:-1px;border-right:none;border-bottom:none;border-top-left-radius:14px}
+.moldura:after{bottom:-1px;right:-1px;border-left:none;border-top:none;border-bottom-right-radius:14px}
+svg{width:100%;height:auto;display:block}
+.nm{font:400 13px var(--sans);fill:var(--wt);letter-spacing:.02em}
+.cp{font:11px var(--mono);fill:var(--dim)}
+.ds{font:300 11px var(--sans);fill:var(--dim)}
+.rg{font:400 10px var(--sans);fill:var(--gold-dim);letter-spacing:.26em}
+
+/* corpo: brilha e respira conforme a vitalidade */
+#silhueta{
+  stroke:rgba(63,212,232,calc(.14 + var(--vit) * .5));stroke-width:.7;
+  filter:drop-shadow(0 0 calc(3px + var(--vit) * 16px) rgba(63,212,232,calc(.06 + var(--vit) * .5)));
+  animation:respira var(--t-corpo) ease-in-out infinite;
+}
+.aura{transform-box:fill-box;transform-origin:center;animation:aura var(--t-corpo) ease-in-out infinite}
+
+/* fios */
+.leader{stroke:var(--bd);stroke-width:.5;fill:none}
+.leader.vd{stroke:rgba(63,212,232,.22)}
+.flow{stroke:var(--cy);stroke-width:1.1;fill:none;stroke-linecap:round;stroke-dasharray:6 94;animation:fio 2.8s linear infinite;filter:drop-shadow(0 0 3px var(--cy))}
+
+/* pontos de cada parte */
+.pt{transform-box:fill-box;transform-origin:center}
+.pt.vd{animation:reator var(--t-pulso) ease-in-out infinite;filter:drop-shadow(0 0 5px var(--vd))}
+.ring.vd{transform-box:fill-box;transform-origin:center;animation:onda var(--t-pulso) ease-out infinite}
+.pt.am{animation:meialuz 4.8s ease-in-out infinite}
+.ring.am{opacity:.22}
+.pt.cz{opacity:.4}
+.ring.cz{opacity:.12}
+
+/* cartões */
+.card{fill:rgba(24,27,35,.92);stroke:var(--bd2);stroke-width:.5}
+.card.vd{stroke:rgba(63,212,232,.28)}
+.card.cz{opacity:.6}
+.barra.vd{animation:respira var(--t-pulso) ease-in-out infinite;filter:drop-shadow(0 0 4px var(--vd))}
+.barra.am{animation:meialuz 4.8s ease-in-out infinite}
+.barra.cz{opacity:.4}
+.txt.cz{opacity:.55}
+
+.rod{max-width:1180px;margin:26px auto 0;padding:0 22px}
+.rod .box{background:rgba(24,27,35,.85);border:0.5px solid var(--bd2);border-radius:11px;padding:17px 19px}
+.rod h3{font-size:11px;letter-spacing:.2em;color:var(--gold);font-weight:400;margin-bottom:10px}
+.rod ul{list-style:none;font-size:12px;color:var(--dim);line-height:1.85}
+.rod ul b{color:var(--wt);font-weight:500}
+
+@media(max-width:700px){.cab{padding-top:30px}.lg b{font-size:16px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="cab">
+  <h1>O CORPO DO ALFRED</h1>
+  <p>16 partes · cada uma é um componente real do sistema · v2 · estado conferido em 05/10/2026</p>
+</div>
+
+<div class="leg" id="leg"></div>
+
+<div class="vit">
+  <div class="vit-t">vitalidade: <b id="vitn">–</b> de 16 acesas</div>
+  <div class="vit-b" id="vitb"></div>
+</div>
+
+<div class="palco"><div class="moldura">
+<svg viewBox="0 0 1180 940" role="img" aria-label="O ALFRED desenhado como um corpo humano, com 16 partes ligadas a componentes reais do sistema.">
+  <defs>
+    <linearGradient id="gsil" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16202b"/><stop offset="100%" stop-color="#0d1117"/>
+    </linearGradient>
+    <radialGradient id="gaura" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#3fd4e8" stop-opacity=".34"/>
+      <stop offset="55%" stop-color="#3fd4e8" stop-opacity=".07"/>
+      <stop offset="100%" stop-color="#3fd4e8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- aura: cresce com a vitalidade -->
+  <ellipse class="aura" cx="590" cy="440" rx="250" ry="440" fill="url(#gaura)"/>
+
+  <!-- ===== SILHUETA ===== -->
+  <g id="silhueta" fill="url(#gsil)">
+    <!-- cabeça -->
+    <ellipse cx="590" cy="128" rx="62" ry="72"/>
+    <!-- pescoço -->
+    <rect x="572" y="192" width="36" height="28" rx="11"/>
+    <!-- tronco -->
+    <path d="M590 216
+             C 648 216, 680 240, 686 284
+             L 694 404
+             C 696 442, 688 474, 674 498
+             L 652 540
+             L 528 540
+             L 506 498
+             C 492 474, 484 442, 486 404
+             L 494 284
+             C 500 240, 532 216, 590 216 Z"/>
+    <!-- braço esquerdo -->
+    <path d="M496 258 C 470 270, 458 306, 454 352 L 444 466 C 442 490, 446 510, 454 524
+             L 474 518 C 468 504, 466 490, 468 468 L 478 356 C 482 318, 490 288, 504 276 Z"/>
+    <!-- braço direito -->
+    <path d="M684 258 C 710 270, 722 306, 726 352 L 736 466 C 738 490, 734 510, 726 524
+             L 706 518 C 712 504, 714 490, 712 468 L 702 356 C 698 318, 690 288, 676 276 Z"/>
+    <!-- mãos -->
+    <ellipse cx="462" cy="542" rx="18" ry="23"/>
+    <ellipse cx="718" cy="542" rx="18" ry="23"/>
+    <!-- perna esquerda -->
+    <path d="M532 540 L 524 690 L 516 824 L 554 824 L 560 690 L 576 540 Z"/>
+    <!-- perna direita -->
+    <path d="M648 540 L 656 690 L 664 824 L 626 824 L 620 690 L 604 540 Z"/>
+    <!-- pés -->
+    <path d="M514 824 L 556 824 L 558 848 L 504 848 Z"/>
+    <path d="M666 824 L 624 824 L 622 848 L 676 848 Z"/>
+  </g>
+
+  <!-- traço da face: só marca onde ficam olho, orelha e boca -->
+  <g stroke="#3a4454" stroke-width=".6" fill="none" opacity=".8">
+    <path d="M556 168 Q 590 180 624 168"/>
+    <ellipse cx="528" cy="132" rx="9" ry="14"/>
+  </g>
+
+  <!-- rótulos de região -->
+  <text class="rg" x="590" y="40"  text-anchor="middle">CABEÇA</text>
+  <text class="rg" x="590" y="352" text-anchor="middle" opacity=".55">TRONCO</text>
+  <text class="rg" x="590" y="730" text-anchor="middle" opacity=".55">MEMBROS</text>
+
+  <g id="desenho"></g>
+</svg>
+</div></div>
+
+<div class="rod">
+  <div class="box">
+    <h3>COMO LER</h3>
+    <ul>
+      <li><b>Verde</b> — está pronto e já foi provado funcionando. <span style="color:var(--cy)">Pulsa, e o fio dele leva luz.</span></li>
+      <li><b>Amarelo</b> — existe construído, mas está desligado ou só faz metade. <span style="color:var(--am)">Pisca devagar, à meia-luz.</span></li>
+      <li><b>Cinza</b> — ainda não existe. É o que falta construir. Fica apagado e parado.</li>
+      <li><b>Vitalidade</b> — quantas das 16 partes estão verdes. Quanto mais verdes, mais o corpo brilha e mais rápido pulsa.</li>
+      <li style="margin-top:9px"><b>Ele pensa, escreve, tem reflexo e se vigia.</b> Ganhou rosto (a Caverna), voz (pelo navegador) e o começo da vontade (o Maestro registra, ainda não decide) — os três pela metade. Ouvido, olho e a busca da memória estão parados enquanto a conta da OpenAI estiver sem crédito.</li>
+      <li style="margin-top:9px"><b>v2 — 05/10/2026.</b> Placar anterior 10 verde · 2 amarelo · 4 cinza. Placar novo 8 verde · 8 amarelo · 0 cinza. Mesmo desenho e mesmas 16 partes do arquivo original; mudaram só cores, placar e textos de componente. Conferido ao vivo no n8n e no banco em 05/10. O que não foi reconferido está na lista "A CONFIRMAR" do resumo no cofre.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+/* lado · nome · componente real · o que faz · cor · âncora x,y */
+var P=[
+ ['E','Cérebro',   'claude-sonnet-4-6 · LiteLLM', 'pensa e decide',            'vd', 590, 84],
+ ['E','Vontade',   'o Maestro · fila_jobs',       'registra — ainda não decide','am', 556, 96],
+ ['E','Memória',   'RAG + n8n_chat_histories',    'lembra a conversa · RAG sem crédito','am', 552,122],
+ ['E','Skills',    'systemMessage + métodos',     'sabe COMO fazer',           'vd', 560,150],
+ ['E','Ouvido',    'OpenAI · transcrição',        'parado — OpenAI sem crédito','am', 528,132],
+ ['E','Olho',      'OpenAI · imagem e PDF',       'parado — OpenAI sem crédito','am', 612,124],
+ ['E','Fala',      'Evolution API · WhatsApp',    'escreve e responde',        'vd', 590,172],
+ ['E','Voz',       'voz do navegador · na Caverna','fala com o Silas — não provada','am', 590,206],
+
+ ['D','Rosto',     'a Caverna · 5 de 8 salas',    'o Silas vê e pergunta — não comanda','am', 624, 96],
+ ['D','Pele',      'blindagem anti-injeção',      'não deixa entrar veneno',   'vd', 678,492],
+ ['D','Coração',   'n8n · 22 fluxos',             'bate e move tudo',          'vd', 560,292],
+ ['D','Reflexo',   'piso determinístico',         'responde sem pensar',       'vd', 628,330],
+ ['D','Nervos',    'watchdog + heartbeat ntfy 6h','avisa quando algo trava',   'vd', 590,396],
+ ['D','Imunidade', 'circuit breaker · Redis',     'avisa em 3 erros / 5 min',  'vd', 590,462],
+ ['D','Mãos',      'ponte do portal · tools',     'alcança — hoje só lê',      'am', 718,542],
+ ['D','Pernas',    'cron · Régua de cobrança',    'vai sozinho — régua em ensaio','am', 648,690]
+];
+
+var COR={vd:'#4ade80',am:'#fbbf24',cz:'#5b6376'};
+var ROT={vd:['Verde','pronto e provado'],am:['Amarelo','existe, parado ou pela metade'],cz:['Cinza','ainda não existe']};
+
+var CW=290, CH=78, GAP=9, TOP=72;
+var XE=22, XD=1180-22-CW;
+
+var g='', cE=0, cD=0, cont={vd:0,am:0,cz:0};
+for(var i=0;i<P.length;i++){
+  var p=P[i], lado=p[0], nome=p[1], comp=p[2], desc=p[3], cor=p[4], ax=p[5], ay=p[6];
+  cont[cor]++;
+  var esq = lado==='E';
+  var idx = esq ? cE++ : cD++;
+  var x = esq ? XE : XD;
+  var y = TOP + idx*(CH+GAP);
+  var cy = y + CH/2;
+  var bx = esq ? x+CW : x;           /* ponto de saída do cartão */
+
+  /* fio: sai do cartão, degrau, chega na âncora. Só o fio de parte viva (verde) leva luz. */
+  var mx = esq ? bx+26 : bx-26;
+  var d = 'M'+bx+' '+cy+' H'+mx+' L'+ax+' '+ay;
+  g += '<path class="leader '+cor+'" d="'+d+'"/>';
+  if(cor==='vd')
+    g += '<path class="flow" pathLength="100" d="'+d+'" style="animation-delay:-'+(i*0.37).toFixed(2)+'s"/>';
+
+  /* ponto no corpo: verde pulsa, amarelo pisca devagar, cinza fica apagado */
+  var atraso = ' style="animation-delay:-'+(i*0.29).toFixed(2)+'s"';
+  g += '<circle class="ring '+cor+'" cx="'+ax+'" cy="'+ay+'" r="10" fill="none" stroke="'+COR[cor]+'" stroke-width=".7"'+(cor==='vd'?atraso:'')+'/>';
+  g += '<circle class="pt '+cor+'" cx="'+ax+'" cy="'+ay+'" r="5.5" fill="'+COR[cor]+'"'+(cor!=='cz'?atraso:'')+'/>';
+
+  /* cartão */
+  g += '<rect class="card '+cor+'" x="'+x+'" y="'+y+'" width="'+CW+'" height="'+CH+'" rx="10"/>';
+  g += '<rect class="barra '+cor+'" x="'+x+'" y="'+(y+14)+'" width="2.5" height="'+(CH-28)+'" rx="1.25" fill="'+COR[cor]+'"'+(cor!=='cz'?atraso:'')+'/>';
+  var tx = x+17;
+  g += '<g class="txt '+cor+'">';
+  g += '<text class="nm" x="'+tx+'" y="'+(y+26)+'">'+nome+'</text>';
+  g += '<text class="cp" x="'+tx+'" y="'+(y+45)+'">'+comp+'</text>';
+  g += '<text class="ds" x="'+tx+'" y="'+(y+63)+'">'+desc+'</text>';
+  g += '</g>';
+}
+document.getElementById('desenho').innerHTML=g;
+
+/* placar */
+var lg='';
+['vd','am','cz'].forEach(function(k){
+  lg += '<div class="lg"><i class="'+k+'"></i><b style="color:'+COR[k]+'">'+cont[k]+'</b>'+
+        '<span><u>'+ROT[k][0]+'</u>'+ROT[k][1]+'</span></div>';
+});
+lg += '<div class="lg"><i class="tt"></i><b style="color:#e0a53c">'+P.length+'</b>'+
+      '<span><u>Total</u>partes do corpo</span></div>';
+document.getElementById('leg').innerHTML=lg;
+
+/* vitalidade: o script só grava o número; brilho e ritmo saem do CSS (--vit) */
+document.documentElement.style.setProperty('--vit', (cont.vd/P.length).toFixed(4));
+document.getElementById('vitn').textContent = cont.vd;
+var vb='';
+for(var s=0;s<P.length;s++){
+  var c = s<cont.vd ? 'on' : (s<cont.vd+cont.am ? 'meia' : '');
+  vb += '<i class="'+c+'" style="animation-delay:-'+(s*0.18).toFixed(2)+'s"></i>';
+}
+document.getElementById('vitb').innerHTML=vb;
+</script>
+</body>
+</html>

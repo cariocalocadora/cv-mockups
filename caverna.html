@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caverna do ALFRED — Sequência</title>
+<style>
+:root{
+  --gold:#e0a53c; --gold-dim:#8a6724;
+  --cy:#3fd4e8; --cy-dim:#1b6b7a;
+  --bg:#0d0f14; --panel:#12141a; --blk:#181b23;
+  --bd:#2a2f3a; --bd2:#262b36;
+  --wt:#e8ebf2; --dim:#7d8598;
+  --ok:#4ade80; --warn:#fbbf24; --bad:#f87171;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#07080b;color:var(--wt);font-family:var(--sans);padding:0 0 80px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.gold{color:var(--gold)}.cy{color:var(--cy)}.dim{color:var(--dim)}
+
+/* ===== movimento (só CSS) — mesma linguagem do Corpo: vivo pulsa em ciano, meia-luz âmbar, vazio apagado ===== */
+@keyframes br{0%,100%{opacity:.74;transform:scale(.93);box-shadow:0 0 10px rgba(63,212,232,.35),0 0 0 0 rgba(63,212,232,.0)}50%{opacity:1;transform:scale(1.05);box-shadow:0 0 26px rgba(63,212,232,.75),0 0 60px rgba(63,212,232,.18)}}
+@keyframes onda{0%{transform:scale(.75);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+@keyframes giro{to{transform:rotate(360deg)}}
+@keyframes fl{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes vivo{0%,100%{transform:scale(.8);opacity:.7;box-shadow:0 0 0 0 rgba(63,212,232,.55)}50%{transform:scale(1.25);opacity:1;box-shadow:0 0 9px 2px rgba(63,212,232,.55)}}
+@keyframes vivoVd{0%,100%{transform:scale(.8);opacity:.7;box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{transform:scale(1.25);opacity:1;box-shadow:0 0 9px 2px rgba(74,222,128,.5)}}
+@keyframes meialuz{0%,100%{opacity:.28}50%{opacity:.9}}
+@keyframes corre{from{background-position:0 0}to{background-position:-200% 0}}
+.rea{position:relative;border-radius:50%;background:radial-gradient(circle,#eafcff 0%,var(--cy) 22%,var(--cy-dim) 72%,#0c2a31 100%);animation:br 3.2s ease-in-out infinite}
+.rea:before{content:"";position:absolute;inset:-22%;border-radius:50%;border:0.5px solid rgba(63,212,232,.55);animation:onda 3.2s ease-out infinite}
+.rea:after{content:"";position:absolute;inset:-36%;border-radius:50%;border:0.5px dashed rgba(224,165,60,.35);animation:giro 18s linear infinite}
+.fl{animation:fl 1.5s ease-in-out infinite}
+
+/* ===== CAPA + ÍNDICE ===== */
+.capa{max-width:1080px;margin:0 auto;padding:56px 24px 30px;text-align:center}
+.capa .rea{width:64px;height:64px;margin:0 auto 20px}
+.capa h1{font-size:26px;letter-spacing:.22em;font-weight:500;color:var(--gold)}
+.capa p{font-size:12px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:8px}
+.idx{max-width:1080px;margin:0 auto 20px;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:7px}
+.idx a{display:flex;gap:9px;align-items:baseline;background:var(--panel);border:0.5px solid var(--bd);border-radius:8px;padding:9px 12px;text-decoration:none;color:var(--dim);font-size:12px;transition:border-color .15s,color .15s}
+.idx a:hover{border-color:var(--gold);color:var(--wt)}
+.idx a b{font-family:var(--mono);color:var(--gold);font-weight:500;font-size:11px}
+
+/* ===== FRAME DE TELA ===== */
+.frame{max-width:1080px;margin:0 auto;padding:34px 24px 0;scroll-margin-top:16px}
+.fh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.fn{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--gold);border:0.5px solid var(--gold-dim);border-radius:4px;padding:3px 9px;flex:none}
+.ft{font-size:17px;font-weight:500;letter-spacing:.03em}
+.fq{font-size:12px;color:var(--dim);font-style:italic}
+.fd{font-size:12px;color:var(--dim);margin-bottom:12px;line-height:1.6;max-width:760px}
+.fd b{color:var(--wt);font-weight:500}
+.apx{display:inline-block;font-size:10px;letter-spacing:.07em;color:var(--cy);border:0.5px solid var(--cy-dim);border-radius:4px;padding:3px 8px;margin-bottom:11px}
+
+.tela{background:var(--bg);border:0.5px solid var(--bd);border-radius:14px;overflow:hidden}
+.tela.sm{max-width:390px}
+
+/* ===== ENTRADA ===== */
+.ent{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 24px;gap:24px;min-height:460px}
+.ent-rea{width:68px;height:68px}
+.ent-tit{font-size:23px;letter-spacing:.22em;font-weight:500;color:var(--gold)}
+.ent-sub{font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:7px}
+.modos{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;width:100%;max-width:620px}
+.modo{background:var(--panel);border:0.5px solid var(--bd);border-radius:12px;padding:16px}
+.modo.sel{border-color:var(--gold);background:var(--blk)}
+.modo-n{font-size:13px;font-weight:500;letter-spacing:.06em;margin-bottom:5px;color:var(--gold)}
+.modo-d{font-size:11px;color:var(--dim);line-height:1.5}
+.auth{width:100%;max-width:360px;display:flex;flex-direction:column;gap:9px}
+.inp{background:var(--blk);border:0.5px solid var(--bd2);border-radius:8px;padding:11px 13px;color:var(--wt);font-size:13px}
+.inp.ph{color:var(--dim)}
+.btn{background:transparent;border:0.5px solid var(--gold);color:var(--gold);border-radius:8px;padding:11px;font-size:12px;letter-spacing:.1em;text-align:center}
+.f2a{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.f2a span{font-size:10px;letter-spacing:.07em;color:var(--dim);border:0.5px solid var(--bd2);border-radius:4px;padding:4px 9px}
+
+/* ===== SINCRONIZANDO ===== */
+.snc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 24px;min-height:400px}
+.snc-l{font-family:var(--mono);font-size:12px;color:var(--dim);max-width:340px;width:100%}
+.snc-l div{padding:4px 0;display:flex;justify-content:space-between;border-bottom:0.5px solid var(--bd2)}
+
+/* ===== PAINEL ===== */
+.top{display:flex;align-items:center;gap:11px;padding:11px 16px;border-bottom:0.5px solid var(--bd);background:var(--panel);flex-wrap:wrap}
+.top .rea{width:22px;height:22px;flex:none}
+.top-t{font-size:13px;letter-spacing:.17em;color:var(--gold)}
+.top-m{font-size:10px;letter-spacing:.09em;border:0.5px solid var(--gold-dim);color:var(--gold);border-radius:4px;padding:3px 8px}
+.spacer{flex:1}
+.apars{display:flex;gap:4px}
+.apar{font-size:10px;letter-spacing:.06em;color:var(--dim);border:0.5px solid var(--bd2);border-radius:4px;padding:4px 9px}
+.apar.on{color:var(--cy);border-color:var(--cy-dim)}
+.sair{font-size:11px;color:var(--dim);border:0.5px solid var(--bd2);border-radius:5px;padding:5px 11px}
+
+.wrap{display:grid;grid-template-columns:218px 1fr}
+.nav{border-right:0.5px solid var(--bd);padding:12px 9px;background:var(--panel)}
+.nav-g{font-size:9px;letter-spacing:.17em;color:var(--dim);padding:12px 10px 5px;text-transform:uppercase}
+.nav-i{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:7px;font-size:12px;color:var(--dim)}
+.nav-i.on{background:var(--blk);color:var(--gold)}
+.nav-i .dot{width:5px;height:5px;border-radius:50%;background:var(--bd);flex:none}
+.nav-i.viva .dot{background:var(--cy);animation:vivo 2.4s ease-in-out infinite}
+.nav-i.meia .dot{background:var(--warn)}
+.nav-i.vazia .dot{background:var(--bd2)}
+.nav-i.vazia{opacity:.55}
+.nav-i.on{box-shadow:inset 2px 0 0 var(--gold)}
+.main{padding:18px 20px 30px}
+
+.sala-h{display:flex;align-items:baseline;gap:11px;margin-bottom:4px;flex-wrap:wrap}
+.sala-t{font-size:18px;font-weight:500;letter-spacing:.03em}
+.sala-p{font-size:12px;color:var(--dim);font-style:italic}
+.sala-sub{font-size:12px;color:var(--dim);margin-bottom:15px}
+
+.grid{display:grid;gap:10px;margin-bottom:15px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(124px,1fr))}
+.blk{background:var(--blk);border:0.5px solid var(--bd2);border-radius:10px;padding:12px 14px}
+.blk-l{font-size:11px;color:var(--dim);letter-spacing:.04em;margin-bottom:5px}
+.blk-v{font-size:24px;font-weight:500;font-family:var(--mono)}
+.blk-s{font-size:11px;color:var(--dim);margin-top:3px}
+
+.ctr{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.ctr b{font-size:11px;letter-spacing:.04em;padding:6px 11px;border-radius:6px;border:0.5px solid var(--bd2);color:var(--dim);font-weight:400}
+.ctr b.lig{border-color:var(--cy-dim);color:var(--cy)}
+
+.bar{height:4px;background:var(--bd2);border-radius:2px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--cy);border-radius:2px}
+.spark{display:flex;align-items:flex-end;gap:2px;height:28px;margin-top:8px}
+.spark i{flex:1;background:var(--gold-dim);border-radius:1px}
+
+.lin{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--bd2);font-size:12px}
+.lin:last-child{border-bottom:none}
+.lin .nm{flex:1;min-width:0}
+.lin .nm b{display:block;font-weight:500;font-size:12px}
+.lin .nm span{font-size:11px;color:var(--dim)}
+.tag{font-size:10px;letter-spacing:.07em;padding:3px 8px;border-radius:3px;white-space:nowrap}
+.t-ok{background:rgba(74,222,128,.12);color:var(--ok)}
+.t-run{background:rgba(63,212,232,.12);color:var(--cy)}
+.t-wait{background:rgba(251,191,36,.12);color:var(--warn)}
+.t-bad{background:rgba(248,113,113,.12);color:var(--bad)}
+.t-off{background:rgba(125,133,152,.1);color:var(--dim)}
+
+.corpo{display:grid;grid-template-columns:repeat(auto-fit,minmax(142px,1fr));gap:8px}
+.pc{background:var(--blk);border:0.5px solid var(--bd2);border-radius:8px;padding:9px 11px}
+.pc b{display:block;font-size:12px;font-weight:500;margin-bottom:2px}
+.pc span{font-size:11px;color:var(--dim)}
+.pc b:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:7px;vertical-align:1px;background:var(--bd)}
+.pc.vd{border-color:rgba(63,212,232,.3)}
+.pc.vd b:before{background:var(--ok);animation:vivoVd 2.6s ease-in-out infinite}
+.pc.am b:before{background:var(--warn);animation:meialuz 4.8s ease-in-out infinite}
+.pc.cz{opacity:.45}
+.vit{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.vit-t{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.vit-t b{font-family:var(--mono);font-weight:400;font-size:13px;color:var(--cy);text-shadow:0 0 9px rgba(63,212,232,.6)}
+.vit-b{display:flex;gap:3px;flex:1;min-width:160px}
+.vit-b i{flex:1;height:4px;border-radius:1px;background:var(--bd2)}
+.vit-b i.on{background:var(--cy);box-shadow:0 0 6px rgba(63,212,232,.7);animation:fl 2.8s ease-in-out infinite}
+.vit-b i.meia{background:var(--warn);opacity:.38}
+
+.vazia{border:0.5px dashed var(--bd2);border-radius:10px;padding:20px;text-align:center;color:var(--dim);font-size:12px}
+.nota{font-size:11px;color:var(--dim);border-left:2px solid var(--gold-dim);padding-left:11px;margin-top:14px;line-height:1.65}
+.nota b{color:var(--wt);font-weight:500}
+
+.fim{max-width:1080px;margin:50px auto 0;padding:0 24px}
+.fim .blk{padding:18px 20px}
+.fim h3{font-size:13px;letter-spacing:.14em;color:var(--gold);font-weight:500;margin-bottom:11px}
+.fim ul{list-style:none;font-size:12px;color:var(--dim);line-height:1.9}
+.fim ul b{color:var(--wt);font-weight:500}
+
+/* ===== acabamento HUD ===== */
+body{background:
+  radial-gradient(1000px 520px at 50% 0, rgba(63,212,232,.055), transparent 70%),
+  repeating-linear-gradient(0deg, rgba(255,255,255,.011) 0 .5px, transparent .5px 44px),
+  repeating-linear-gradient(90deg, rgba(255,255,255,.011) 0 .5px, transparent .5px 44px),
+  #07080b;font-weight:300}
+.capa h1,.ent-tit{font-weight:300;letter-spacing:.28em}
+.ft,.sala-t{font-weight:400}
+.tela{position:relative;box-shadow:0 0 0 .5px rgba(224,165,60,.07),0 18px 60px rgba(0,0,0,.55)}
+.tela:before,.tela:after{content:"";position:absolute;width:20px;height:20px;border:0.5px solid var(--gold);pointer-events:none;z-index:2}
+.tela:before{top:-1px;left:-1px;border-right:none;border-bottom:none;border-top-left-radius:14px}
+.tela:after{bottom:-1px;right:-1px;border-left:none;border-top:none;border-bottom-right-radius:14px}
+.top{background:linear-gradient(180deg,#14171e,var(--panel))}
+.top-t{font-weight:300;letter-spacing:.24em}
+.apar.on{box-shadow:0 0 10px rgba(63,212,232,.18)}
+.blk-v{font-weight:400}
+.blk-v.cy{text-shadow:0 0 12px rgba(63,212,232,.45)}
+.bar i{background:linear-gradient(90deg,var(--cy-dim),var(--cy),#c9f7ff,var(--cy),var(--cy-dim));background-size:200% 100%;animation:corre 3.4s linear infinite}
+.ctr b.lig{box-shadow:0 0 8px rgba(63,212,232,.14)}
+.btn{box-shadow:0 0 14px rgba(224,165,60,.1)}
+.snc-l .cy{text-shadow:0 0 8px rgba(63,212,232,.5);animation:fl 2.6s ease-in-out infinite}
+/* etiqueta de cada tela: viva = ponto ciano pulsando · pela metade = âmbar fixo · vazia/desenho = apagada */
+.apx{display:inline-flex;align-items:center;gap:7px}
+.apx:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--bd);flex:none}
+.apx.viva:before{background:var(--cy);animation:vivo 2.4s ease-in-out infinite}
+.apx.meia{color:var(--warn);border-color:rgba(251,191,36,.35)}
+.apx.meia:before{background:var(--warn)}
+.apx.vazia,.apx.des{color:var(--dim);border-color:var(--bd2)}
+.idx a i{width:5px;height:5px;border-radius:50%;background:var(--bd2);flex:none;align-self:center}
+.idx a.viva i{background:var(--cy);animation:vivo 2.4s ease-in-out infinite}
+.idx a.meia i{background:var(--warn)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important}}
+
+@media(max-width:860px){
+  .wrap{grid-template-columns:1fr}
+  .nav{border-right:none;border-bottom:0.5px solid var(--bd);display:flex;overflow-x:auto;gap:4px;padding:8px}
+  .nav-g{display:none}
+  .nav-i{white-space:nowrap;padding:7px 11px}
+  .main{padding:14px}
+  .frame{padding:26px 14px 0}
+  .capa,.idx,.fim{padding-left:14px;padding-right:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="capa">
+  <div class="rea"></div>
+  <h1>CAVERNA DO ALFRED</h1>
+  <p>sequência completa de acesso · 12 telas · v2 · estado real de 05/10/2026</p>
+</div>
+<nav class="idx" id="idx"></nav>
+
+<div id="seq"></div>
+
+<div class="fim">
+  <div class="blk">
+    <h3>O QUE ESTE ARQUIVO É</h3>
+    <ul>
+      <li><b>v2 — 05/10/2026.</b> Mesmo desenho do arquivo original (paleta, 12 telas, 8 salas, 4 botões, 3 modos, 16 partes). Mudaram só números, estados e textos que já não batiam com a realidade.</li>
+      <li><b>Conferido ao vivo em 05/10</b> (banco e n8n): fila, worker, ligados/pausados, conversas do dia, devedores, promessas, gasto estimado, 22 fluxos ativos, OpenAI sem crédito.</li>
+      <li><b>No painel real hoje:</b> 5 salas no ar (Salão, Cérebros, Equipe, Central, Comando) e 3 ainda em cinza (Saber, Ferramentas, Cofre). A etiqueta em cada tela diz qual é o caso.</li>
+      <li><b>Continua ilustrativo</b> (não existe medidor real): os gráficos de custo por modelo, o funil por etiqueta, "falando agora" na TV, e o conteúdo das salas que ainda estão em cinza.</li>
+      <li><b>Ainda só desenho:</b> os 3 modos, a tela Sincronizando, os 4 botões por sala e as versões TV e celular não foram confirmados no painel publicado.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+function ctr(){
+  return '<div class="ctr"><b class="lig">ligar</b><b>configurar</b><b>gráfico de custo</b><b>gasto</b></div>';
+}
+function spark(v){
+  var h=''; for(var i=0;i<v.length;i++) h+='<i style="height:'+v[i]+'%"></i>';
+  return '<div class="spark">'+h+'</div>';
+}
+
+var CORPO=[
+ ['Cérebro','pensa','vd'],['Memória','lembra','am'],['Skills','sabe fazer','vd'],
+ ['Fala','escreve e responde','vd'],['Ouvido','áudio · sem crédito','am'],['Olho','imagem e PDF · sem crédito','am'],
+ ['Mãos','hoje só lê','am'],['Pernas','cron · régua em ensaio','am'],['Coração','heartbeat 6h','vd'],
+ ['Reflexo','piso determinístico','vd'],['Pele','blindagem anti-injeção','vd'],['Imunidade','circuit breaker','vd'],
+ ['Nervos','watchdog de fila','vd'],['Voz','navegador · não provada','am'],['Rosto','a Caverna · 5 de 8 salas','am'],['Vontade','Maestro · só registra','am']
+];
+
+var SALAS={
+ salao:{t:'Salão',p:'o que está acontecendo agora?',s:'A entrada. Não é menu — é a fila viva.',
+  html:function(){
+   return '<div class="grid g4">'+
+     '<div class="blk"><div class="blk-l">pendentes</div><div class="blk-v cy">0</div></div>'+
+     '<div class="blk"><div class="blk-l">executando</div><div class="blk-v cy">0</div></div>'+
+     '<div class="blk"><div class="blk-l">aprovação</div><div class="blk-v gold">0</div></div>'+
+     '<div class="blk"><div class="blk-l">mortos</div><div class="blk-v">0</div></div>'+
+     '<div class="blk"><div class="blk-l">batida do worker</div><div class="blk-v" style="font-size:17px">há 6s</div></div>'+
+     '<div class="blk"><div class="blk-l">gasto do mês</div><div class="blk-v" style="font-size:17px">US$ 0,07<span class="dim" style="font-size:11px"> est.</span></div></div>'+
+   '</div>'+
+   '<div class="blk"><div class="blk-l" style="margin-bottom:9px">FILA AO VIVO</div>'+
+     '<div class="lin"><span class="tag t-ok">feito</span><div class="nm"><b>Resumo diário · passo 3 de 3</b><span>cron · resumo enviado · 03/10 20:00</span><div class="bar"><i style="width:100%"></i></div></div></div>'+
+     '<div class="lin"><span class="tag t-off">expirado</span><div class="nm"><b>Prova de aprovação vencida</b><span>job de teste do Silas · 04/10 18:47</span></div></div>'+
+     '<div class="lin"><span class="tag t-ok">feito</span><div class="nm"><b>Contar devedores</b><span>teste de agosto · 06/08</span></div></div>'+
+   '</div>'+
+   '<div class="nota">Hoje o painel <b>só lê</b> a <b>fila_jobs</b>. Quem escreve nela são os fluxos (resumo diário, frota, pausa de IA). O worker da VPS só executa consulta. A fila tem 3 linhas.</div>';
+  }},
+
+ cerebros:{t:'Cérebros',p:'com o que ele pensa?',s:'Qual modelo para qual trabalho, e quanto custa cada um.',
+  html:function(){
+   return '<div class="grid g2">'+
+     '<div class="blk"><div class="blk-l">PRINCIPAL</div><div style="font-size:15px;font-weight:500">claude-sonnet-4-6</div><div class="blk-s">decisão, cobrança, texto longo</div>'+spark([30,44,38,60,52,70,48,58])+ctr()+'</div>'+
+     '<div class="blk"><div class="blk-l">MÍDIA</div><div style="font-size:15px;font-weight:500">openai <span class="tag t-bad">sem crédito</span></div><div class="blk-s">áudio, imagem, PDF · parado desde 05/10</div>'+spark([12,18,9,22,14,11,19,13])+ctr()+'</div>'+
+     '<div class="blk"><div class="blk-l">GATEWAY</div><div style="font-size:15px;font-weight:500">litellm</div><div class="blk-s">rota alfred-cerebro · reserva gpt-4o sem crédito</div>'+spark([40,55,47,62,58,66,54,61])+ctr()+'</div>'+
+   '</div>'+
+   '<div class="blk"><div class="blk-l">GASTO DO MÊS</div><div class="blk-v">US$ 0,07 <span class="dim" style="font-size:12px">estimado · alerta em US$ 10</span></div><div class="bar"><i style="width:1%"></i></div><div class="blk-s">conta mensagens × US$ 0,022 · só 1 dia coberto pelo resumo diário</div></div>';
+  }},
+
+ saber:{t:'Saber',p:'o que ele sabe e sabe fazer?',s:'Duas prateleiras: leis e fatos · métodos.',
+  html:function(){
+   return '<div class="grid g2">'+
+     '<div class="blk"><div class="blk-l">LEIS E FATOS</div>'+
+       '<div class="lin"><div class="nm"><b>Fuso Campo Grande</b><span>UTC-4 em todo cálculo</span></div></div>'+
+       '<div class="lin"><div class="nm"><b>Prazo 12:00</b><span>segunda · passou, multa e juros</span></div></div>'+
+       '<div class="lin"><div class="nm"><b>Teto de desconto</b><span>15% · 6× · 30 dias</span></div></div>'+
+       '<div class="lin"><div class="nm"><b>CDC art. 42</b><span>cobrança nunca vexatória</span></div></div>'+ctr()+'</div>'+
+     '<div class="blk"><div class="blk-l">MÉTODOS</div>'+
+       '<div class="lin"><div class="nm"><b>Como cobrar</b><span>5 perfis de devedor</span></div></div>'+
+       '<div class="lin"><div class="nm"><b>Como negociar</b><span>valor e data, sempre</span></div></div>'+
+       '<div class="lin"><div class="nm"><b>Como escrever</b><span>no tom do Silas</span></div></div>'+
+       '<div class="lin"><div class="nm"><b>Como ler contrato</b><span>cláusula por cláusula</span></div></div>'+ctr()+'</div>'+
+   '</div>'+
+   '<div class="nota">Memória de <b>fato</b> e memória de <b>procedimento</b> em prateleiras diferentes — mesmo órgão, prateleira diferente.</div>';
+  }},
+
+ equipe:{t:'Equipe',p:'quem faz o quê, com quanta liberdade?',s:'Cada agente: papel, o que sabe, o que alcança, quando acorda, até onde vai sozinho.',
+  html:function(){
+   return '<div class="blk">'+
+     '<div class="lin"><span class="tag t-ok">ativo</span><div class="nm"><b>Supervisor</b><span>atende e negocia · fecha dentro do teto</span></div></div>'+
+     '<div class="lin"><span class="tag t-wait">pela metade</span><div class="nm"><b>Maestro</b><span>a fila está no ar e registra · ainda não decide o ambíguo</span></div></div>'+
+     '<div class="lin"><span class="tag t-wait">sem prova real</span><div class="nm"><b>Frota</b><span>no ar · alerta Saulo e Ronei · 0 ocorrência real até hoje</span></div></div>'+
+     '<div class="lin"><span class="tag t-off">não existe</span><div class="nm"><b>Vistoria</b><span>agenda no portal + fotos</span></div></div>'+
+     '<div class="lin"><span class="tag t-off">não existe</span><div class="nm"><b>Relatório</b><span>disponíveis · funilaria · inadimplentes</span></div></div>'+
+   ctr()+'</div>'+
+   '<div class="nota">Agente A escreve, agente B lê — <b>por tabela</b>. Se falassem direto, nada disso apareceria aqui.</div>';
+  }},
+
+ central:{t:'Central de Atendimento',p:'com quem ele fala agora?',s:'Funil do anúncio por etiqueta e os grupos de locação.',
+  html:function(){
+   return '<div class="grid g4">'+
+     '<div class="blk"><div class="blk-l">ligados</div><div class="blk-v">813</div></div>'+
+     '<div class="blk"><div class="blk-l">pausados</div><div class="blk-v">0</div></div>'+
+     '<div class="blk"><div class="blk-l">conversas hoje</div><div class="blk-v">1</div></div>'+
+     '<div class="blk"><div class="blk-l">escaladas</div><div class="blk-v gold">0</div></div>'+
+   '</div>'+
+   '<div class="blk"><div class="blk-l" style="margin-bottom:9px">FUNIL POR ETIQUETA</div>'+
+     '<div class="lin"><div class="nm"><b>Candidato</b><span>veio do anúncio</span></div><span class="tag t-run">14</span></div>'+
+     '<div class="lin"><div class="nm"><b>Qualificado</b><span>CNH 5 anos, tem interesse</span></div><span class="tag t-run">6</span></div>'+
+     '<div class="lin"><div class="nm"><b>Locatário</b><span>contrato ativo</span></div><span class="tag t-ok">57</span></div>'+
+     '<div class="lin"><div class="nm"><b>Inadimplente</b><span>vencido e não pago · espelho do portal de hoje</span></div><span class="tag t-bad">4</span></div>'+
+   ctr()+'</div>';
+  }},
+
+ ferramentas:{t:'Ferramentas',p:'o que ele alcança?',s:'WhatsApp, portal, banco, órgãos.',
+  html:function(){
+   return '<div class="blk">'+
+     '<div class="lin"><span class="tag t-ok">ok</span><div class="nm"><b>WhatsApp · Evolution</b><span>sessão aberta</span></div></div>'+
+     '<div class="lin"><span class="tag t-ok">ok</span><div class="nm"><b>Chatwoot</b><span>conversas e etiquetas</span></div></div>'+
+     '<div class="lin"><span class="tag t-ok">ok</span><div class="nm"><b>Portal da locadora</b><span>por ponte · telefone ou CPF</span></div></div>'+
+     '<div class="lin"><span class="tag t-ok">ok</span><div class="nm"><b>Banco do ALFRED</b><span>conversa, promessa, saber</span></div></div>'+
+     '<div class="lin"><span class="tag t-off">não ligado</span><div class="nm"><b>Órgãos · Detran</b><span>multa e licenciamento</span></div></div>'+
+   ctr()+'</div>'+
+   '<div class="vazia" style="margin-top:11px">sem indicador ainda</div>';
+  }},
+
+ cofre:{t:'Cofre',p:'ele tem permissão?',s:'A permissão de alcançar. Nunca mostra o valor da chave.',
+  html:function(){
+   return '<div class="blk">'+
+     '<div class="lin"><span class="tag t-ok">válida</span><div class="nm"><b>ANTHROPIC_API_KEY</b><span>cérebro</span></div></div>'+
+     '<div class="lin"><span class="tag t-bad">sem crédito</span><div class="nm"><b>OPENAI_API_KEY</b><span>áudio e imagem · a chave existe, a conta está zerada</span></div></div>'+
+     '<div class="lin"><span class="tag t-ok">válida</span><div class="nm"><b>EVOLUTION_API_KEY</b><span>WhatsApp · rotacionada 29/07</span></div></div>'+
+     '<div class="lin"><span class="tag t-ok">válida</span><div class="nm"><b>AGENTE_WHATSAPP_TOKEN</b><span>ponte do portal</span></div></div>'+
+     '<div class="lin"><span class="tag t-wait">rotacionar</span><div class="nm"><b>GITHUB_TOKEN</b><span>cofres</span></div></div>'+
+   ctr()+'</div>'+
+   '<div class="nota">O cofre mostra <b>se existe e se vale</b>. O valor nunca aparece na tela — nem pro Silas.</div>'+
+   '<div class="vazia" style="margin-top:11px">sem indicador ainda</div>';
+  }},
+
+ comando:{t:'Comando',p:'como eu falo com ele?',s:'Hoje: pergunta por texto ou pelo microfone do navegador. A ligação ao vivo ainda é o alvo.',
+  html:function(){
+   return '<div class="blk" style="text-align:center;padding:30px">'+
+     '<div class="rea" style="width:54px;height:54px;margin:0 auto 15px"></div>'+
+     '<div style="font-size:14px;letter-spacing:.11em;color:var(--gold)">SALA DE COMANDO</div>'+
+     '<div class="blk-s" style="margin-top:7px">hoje só consulta · ação ainda não existe (a aprovação está montada e desligada)</div>'+ctr()+'</div>'+
+   '<div class="vazia" style="margin-top:11px">no ar: texto e voz do navegador · 50 perguntas por dia · a voz ainda não foi provada com microfone real</div>'+
+   '<div class="nota">Transcrição erra. "Cancela o contrato" e "cancela a cobrança" soam parecido — por isso ação nunca sai sem o Silas ver.</div>';
+  }}
+};
+
+var NAVMAP=[
+ ['g','salão'],['i','salao','Salão','viva'],
+ ['g','cabeça'],['i','cerebros','Cérebros','meia'],['i','saber','Saber','vazia'],
+ ['g','corpo'],['i','equipe','Equipe','meia'],['i','central','Central de Atendimento','meia'],
+ ['g','membros'],['i','ferramentas','Ferramentas','vazia'],['i','cofre','Cofre','vazia'],
+ ['g','sentidos'],['i','comando','Comando','meia']
+];
+
+function nav(ativo){
+  var h='<nav class="nav">';
+  for(var i=0;i<NAVMAP.length;i++){
+    var n=NAVMAP[i];
+    if(n[0]==='g'){ h+='<div class="nav-g">'+n[1]+'</div>'; }
+    else{
+      var cls='nav-i'+(n[1]===ativo?' on':'')+' '+n[3];
+      h+='<div class="'+cls+'"><i class="dot"></i>'+n[2]+'</div>';
+    }
+  }
+  return h+'</nav>';
+}
+
+function topo(modo,apar){
+  var aps=[['PC','pc'],['TABLET','tablet'],['CELULAR','celular'],['TV','tv']], h='';
+  for(var i=0;i<aps.length;i++)
+    h+='<div class="apar'+(aps[i][1]===apar?' on':'')+'">'+aps[i][0]+'</div>';
+  return '<div class="top"><div class="rea"></div><div class="top-t">CAVERNA</div>'+
+    '<div class="top-m">'+modo+'</div><div class="spacer"></div>'+
+    '<div class="apars">'+h+'</div><div class="sair">sair</div></div>';
+}
+
+function corpoGrid(){
+  var c='', n={vd:0,am:0,cz:0};
+  for(var i=0;i<CORPO.length;i++){
+    n[CORPO[i][2]]++;
+    c+='<div class="pc '+CORPO[i][2]+'"><b>'+CORPO[i][0]+'</b><span>'+CORPO[i][1]+'</span></div>';
+  }
+  var b='';
+  for(var s=0;s<CORPO.length;s++)
+    b+='<i class="'+(s<n.vd?'on':(s<n.vd+n.am?'meia':''))+'" style="animation-delay:-'+(s*0.18).toFixed(2)+'s"></i>';
+  return '<div style="margin-top:20px"><div class="blk-l" style="margin-bottom:9px">AS 16 PARTES DO CORPO</div>'+
+    '<div class="vit"><div class="vit-t">vitalidade: <b>'+n.vd+'</b> de '+CORPO.length+' acesas</div><div class="vit-b">'+b+'</div></div>'+
+    '<div class="corpo">'+c+'</div></div>';
+}
+
+function painel(k,opt){
+  opt=opt||{};
+  var s=SALAS[k];
+  var h='<div class="sala-h"><div class="sala-t">'+s.t+'</div><div class="sala-p">'+s.p+'</div></div>'+
+        '<div class="sala-sub">'+s.s+'</div>'+s.html();
+  if(k==='salao' && !opt.semCorpo) h+=corpoGrid();
+  return '<div class="tela">'+topo(opt.modo||'EMPRESARIAL',opt.apar||'pc')+
+    '<div class="wrap">'+nav(k)+'<main class="main">'+h+'</main></div></div>';
+}
+
+/* ---- telas especiais ---- */
+function telaEntrada(){
+  return '<div class="tela"><div class="ent">'+
+    '<div class="rea ent-rea"></div>'+
+    '<div style="text-align:center"><div class="ent-tit">CAVERNA DO ALFRED</div>'+
+    '<div class="ent-sub">acesso restrito</div></div>'+
+    '<div class="modos">'+
+      '<div class="modo sel"><div class="modo-n">PESSOAL</div><div class="modo-d">gmail, whatsapp, redes, demandas do Silas</div></div>'+
+      '<div class="modo"><div class="modo-n">EMPRESARIAL</div><div class="modo-d">a operação da locadora em escala</div></div>'+
+      '<div class="modo"><div class="modo-n">CONSTRUTOR</div><div class="modo-d">construir e configurar o próprio ALFRED</div></div>'+
+    '</div>'+
+    '<div class="auth">'+
+      '<div class="inp">cariocalocadora@gmail.com</div>'+
+      '<div class="inp ph">••••••••••••</div>'+
+      '<div class="btn">ENTRAR NA CAVERNA</div>'+
+      '<div class="f2a"><span>2º fator · WhatsApp</span><span>e-mail</span><span>SMS</span><span>Authy</span></div>'+
+    '</div></div></div>';
+}
+
+function telaSinc(){
+  var p=[['cofre','ok'],['n8n · 22 fluxos','ok'],['evolution · sessão','ok'],
+         ['chatwoot','ok'],['supabase ×2','ok'],['worker da VPS','ok']], l='';
+  for(var i=0;i<p.length;i++) l+='<div><span>'+p[i][0]+'</span><span class="cy">'+p[i][1]+'</span></div>';
+  return '<div class="tela"><div class="snc">'+
+    '<div class="rea" style="width:52px;height:52px"></div>'+
+    '<div style="font-size:13px;letter-spacing:.14em;color:var(--gold)">SINCRONIZANDO</div>'+
+    '<div class="snc-l">'+l+'</div></div></div>';
+}
+
+function telaTV(){
+  return '<div class="tela">'+topo('EMPRESARIAL','tv')+
+   '<div class="main" style="padding:26px 24px 34px"><div class="grid g3">'+
+    '<div class="blk"><div class="blk-l" style="font-size:14px">falando agora</div><div class="blk-v" style="font-size:52px">7</div></div>'+
+    '<div class="blk"><div class="blk-l" style="font-size:14px">precisa do Silas</div><div class="blk-v gold" style="font-size:52px">0</div></div>'+
+    '<div class="blk"><div class="blk-l" style="font-size:14px">prometido hoje</div><div class="blk-v" style="font-size:52px">0</div></div>'+
+   '</div><div class="blk"><div class="blk-l" style="font-size:14px;margin-bottom:9px">ÚLTIMAS</div>'+
+    '<div class="lin" style="font-size:16px"><span class="dim mono" style="min-width:54px">18:47</span><div class="nm">Prova de aprovação expirou · 04/10</div></div>'+
+    '<div class="lin" style="font-size:16px"><span class="dim mono" style="min-width:54px">20:00</span><div class="nm">Resumo diário enviado · 03/10</div></div>'+
+   '</div><div class="nota">TV não se clica. Só o salão, fonte grande, sem botão.</div></div></div>';
+}
+
+function telaCelular(){
+  var s=SALAS.salao;
+  var h='<div class="sala-h"><div class="sala-t">'+s.t+'</div></div>'+
+        '<div class="sala-sub">'+s.p+'</div>'+s.html()+
+        '<div class="nota">No celular a ordem inverte: primeiro o que exige decisão. As salas de configuração viram um botão só.</div>';
+  return '<div class="tela sm">'+topo('EMPRESARIAL','celular')+
+    '<div class="wrap" style="grid-template-columns:1fr">'+
+    '<nav class="nav" style="border-right:none;border-bottom:0.5px solid var(--bd);display:flex;overflow-x:auto;gap:4px;padding:8px">'+
+      '<div class="nav-i on viva"><i class="dot"></i>Salão</div><div class="nav-i meia"><i class="dot"></i>Cérebros</div>'+
+      '<div class="nav-i meia"><i class="dot"></i>Equipe</div><div class="nav-i meia"><i class="dot"></i>Central</div>'+
+    '</nav><main class="main" style="padding:14px">'+h+'</main></div></div>';
+}
+
+/* ---- a sequência ---- */
+var SEQ=[
+ {id:'t01',n:'TELA 01',t:'Entrada da Caverna',q:'quem é você e o que vem fazer?',
+  d:'Primeira coisa que aparece. Escolhe <b>um dos 3 modos</b> antes de entrar — o modo muda o que a Caverna mostra depois. O 2º fator chega por WhatsApp, e-mail, SMS ou Authy.',
+  ap:'hoje: e-mail + senha · 2º fator por autenticador só na aprovação · os 3 modos ainda são desenho', html:telaEntrada},
+ {id:'t02',n:'TELA 02',t:'Sincronizando',q:'está tudo de pé?',
+  d:'Entre o login e o painel. Confere um por um o que o ALFRED precisa para funcionar. Se algo não responder, o painel abre com aquela sala marcada.',
+  ap:'ainda é desenho · não existe no painel publicado', html:telaSinc},
+ {id:'t03',n:'TELA 03',t:'Salão',q:'o que está acontecendo agora?',
+  d:'Onde o login cai. Não é menu — é a fila viva, mais <b>as 16 partes do corpo</b> embaixo. O painel nunca executa: escreve na fila e o worker da VPS faz.',
+  ap:'bloco SALÃO · NO AR (as 16 partes ainda não aparecem no painel)', html:function(){return painel('salao')}},
+ {id:'t04',n:'TELA 04',t:'Cérebros',q:'com o que ele pensa?',
+  d:'Primeira sala do bloco CABEÇA. Qual modelo faz qual trabalho e quanto cada um custou no mês.',
+  ap:'bloco CABEÇA · NO AR (hoje só o gasto estimado)', html:function(){return painel('cerebros')}},
+ {id:'t05',n:'TELA 05',t:'Saber',q:'o que ele sabe e sabe fazer?',
+  d:'Segunda sala da CABEÇA. Duas prateleiras separadas: o que é fato/lei e o que é método.',
+  ap:'bloco CABEÇA · ainda em cinza no painel', html:function(){return painel('saber')}},
+ {id:'t06',n:'TELA 06',t:'Equipe',q:'quem faz o quê?',
+  d:'Bloco CORPO. Cada agente com papel, alcance e até onde vai sozinho. O que ainda não existe aparece marcado.',
+  ap:'bloco CORPO · NO AR (hoje mostra contagem de tarefas por tipo, não a ficha de cada agente)', html:function(){return painel('equipe')}},
+ {id:'t07',n:'TELA 07',t:'Central de Atendimento',q:'com quem ele fala agora?',
+  d:'Segunda sala do CORPO. O funil do anúncio por etiqueta — candidato, qualificado, locatário, inadimplente.',
+  ap:'bloco CORPO · NO AR (ligados, pausados e resumo · o funil por etiqueta ainda não)', html:function(){return painel('central')}},
+ {id:'t08',n:'TELA 08',t:'Ferramentas',q:'o que ele alcança?',
+  d:'Bloco MEMBROS. Cada coisa que o ALFRED consegue tocar no mundo, e o que ainda não está ligado.',
+  ap:'bloco MEMBROS · ainda em cinza no painel', html:function(){return painel('ferramentas')}},
+ {id:'t09',n:'TELA 09',t:'Cofre',q:'ele tem permissão?',
+  d:'Segunda sala dos MEMBROS. Mostra <b>se a chave existe e se vale</b> — o valor nunca aparece na tela, nem pro Silas.',
+  ap:'bloco MEMBROS · ainda em cinza no painel', html:function(){return painel('cofre')}},
+ {id:'t10',n:'TELA 10',t:'Comando',q:'como eu falo com ele?',
+  d:'Bloco SENTIDOS, a última sala. Voz ao vivo, como uma ligação. Leitura executa direto; ação pede confirmação.',
+  ap:'bloco SENTIDOS · NO AR (texto + voz do navegador, só consulta)', html:function(){return painel('comando')}},
+ {id:'t11',n:'TELA 11',t:'Mesma Caverna na TV',q:'e quando eu não estou no computador?',
+  d:'Trocou o aparelho para TV: só o salão, fonte grande, <b>nenhum botão</b>. TV é para olhar de longe, não para clicar.',
+  ap:'aparelho TV · não confirmado no painel publicado', html:telaTV},
+ {id:'t12',n:'TELA 12',t:'Mesma Caverna no celular',q:'e na rua?',
+  d:'Trocou para celular: a ordem inverte e o que exige decisão vem primeiro. As salas de configuração colapsam num botão só.',
+  ap:'aparelho CELULAR · não confirmado no painel publicado', html:telaCelular}
+];
+
+/* estado visual de cada tela (mesma leitura das etiquetas): viva · pela metade · vazia · desenho */
+var EST={t03:'viva',t04:'meia',t05:'vazia',t06:'meia',t07:'meia',t08:'vazia',t09:'vazia',t10:'meia'};
+var seq=document.getElementById('seq'), idx=document.getElementById('idx'), out='', ix='';
+for(var i=0;i<SEQ.length;i++){
+  var f=SEQ[i], est=EST[f.id]||'des';
+  ix+='<a class="'+est+'" href="#'+f.id+'"><b>'+(i+1<10?'0':'')+(i+1)+'</b>'+f.t+'<span style="flex:1"></span><i></i></a>';
+  out+='<section class="frame" id="'+f.id+'">'+
+       '<div class="fh"><span class="fn">'+f.n+'</span><span class="ft">'+f.t+'</span>'+
+       '<span class="fq">'+f.q+'</span></div>'+
+       '<div class="fd">'+f.d+'</div>'+
+       (f.ap?'<div class="apx '+est+'">'+f.ap+'</div>':'')+
+       f.html()+'</section>';
+}
+idx.innerHTML=ix; seq.innerHTML=out;
+</script>
+</body>
+</html>
